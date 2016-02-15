@@ -7,7 +7,7 @@ use EventSourcing\AggregateId;
 use EventSourcing\Event;
 use Ramsey\Uuid\UuidInterface;
 
-class BookCopyLendingExtendedEvent implements Event
+class BookLendingExtendedEvent implements Event
 {
     private $extendedOn;
     private $bookCopyId;

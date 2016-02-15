@@ -4,7 +4,7 @@ namespace BookLibrary\Domain;
 
 use LogicException;
 
-class BookCopyNotExistsException extends LogicException
+class BookNotLentCannotBeExtendedException extends LogicException
 {
 
 }

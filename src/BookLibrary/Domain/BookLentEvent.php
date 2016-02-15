@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use EventSourcing\Event;
 use Ramsey\Uuid\UuidInterface;
 
-class BookCopyLentEvent implements Event
+class BookLentEvent implements Event
 {
     private $bookCopyId;
     private $readerId;

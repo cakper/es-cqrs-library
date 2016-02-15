@@ -8,7 +8,7 @@ use EventSourcing\AggregateId;
 use EventSourcing\Event;
 use Ramsey\Uuid\UuidInterface;
 
-class BookCopyReturnedLateEvent implements Event
+class BookReturnedLateEvent implements Event
 {
     private $bookCopyId;
     private $readerId;

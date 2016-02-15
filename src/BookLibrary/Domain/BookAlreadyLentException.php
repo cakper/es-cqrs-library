@@ -4,7 +4,7 @@ namespace BookLibrary\Domain;
 
 use LogicException;
 
-class BookCopyAlreadyLentException extends LogicException
+class BookAlreadyLentException extends LogicException
 {
 
 }

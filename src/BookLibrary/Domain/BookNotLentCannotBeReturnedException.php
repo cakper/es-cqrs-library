@@ -4,7 +4,7 @@ namespace BookLibrary\Domain;
 
 use LogicException;
 
-class BookCopyNotLentCannotBeReturnedException extends LogicException
+class BookNotLentCannotBeReturnedException extends LogicException
 {
 
 }

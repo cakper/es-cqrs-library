@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
-namespace test\BookLibrary\Domain;
+namespace test\BookLibrary;
 
-use BookLibrary\Calendar;
 use DateTimeImmutable;
+use EventSourcing\Calendar;
 use ReflectionClass;
 
 class FakeCalendar extends Calendar

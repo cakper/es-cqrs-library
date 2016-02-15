@@ -1,6 +1,6 @@
 <?php
 
-namespace test\BookLibrary\Domain;
+namespace test\BookLibrary;
 
 use EventSourcing\AggregateRoot;
 use EventSourcing\DelegateMapperException;
