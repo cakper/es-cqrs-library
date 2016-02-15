@@ -5,17 +5,19 @@ namespace test\BookLibrary\Domain;
 use BookLibrary\Domain\Book;
 use BookLibrary\Domain\BookAddedEvent;
 use BookLibrary\Domain\BookAlreadyLentException;
-use BookLibrary\Domain\BookLendingExtendedEvent;
+use BookLibrary\Domain\BookExtendedEvent;
 use BookLibrary\Domain\BookLentEvent;
 use BookLibrary\Domain\BookNotLentCannotBeExtendedException;
+use BookLibrary\Domain\BookNotLentCannotBeReturnedException;
 use BookLibrary\Domain\BookReturnedEvent;
-use BookLibrary\Domain\BookReturnedLateEvent;
 use EventSourcing\Calendar;
 use Ramsey\Uuid\Uuid;
 use test\BookLibrary\ScenarioTest;
 
 class BookTest extends ScenarioTest
 {
+    const TITLE = 'Domain-Driven Design';
+
     protected function getAggregateClass()
     {
         return Book::class;
@@ -23,11 +25,11 @@ class BookTest extends ScenarioTest
 
     public function testAddNewBookCopy()
     {
-        $bookCopyId = Uuid::uuid4();;
+        $bookCopyId = Uuid::uuid4();
 
         $this
-            ->when('add', [$bookCopyId])
-            ->then([new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId)]);
+            ->when('add', [$bookCopyId, self::TITLE])
+            ->then([new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE)]);
     }
 
     public function testLendingBook()
@@ -37,7 +39,7 @@ class BookTest extends ScenarioTest
         $returnDueDate = Calendar::getCurrentDateTime()->modify('+30 days');
 
         $this
-            ->given([new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId)])
+            ->given([new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE)])
             ->when('lendTo', [$readerId, $returnDueDate])
             ->then([new BookLentEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $returnDueDate)]);
     }
@@ -50,7 +52,7 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), Calendar::getCurrentDateTime()->modify('+30 days'))
             ])
             ->when('lendTo', [$secondReaderId, Calendar::getCurrentDateTime()->modify('+30 days')])
@@ -66,11 +68,11 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn)
             ])
             ->when('lendTo', [$readerId, $dueOn])
-            ->then([]);
+            ->then(BookAlreadyLentException::class);
     }
 
     public function testReturnBook()
@@ -82,11 +84,11 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn)
             ])
             ->when('return')
-            ->then([new BookReturnedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $readerId)]);
+            ->then([new BookReturnedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn)]);
     }
 
     public function testReturnBookThatWasAlreadyReturned()
@@ -98,12 +100,12 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn),
-                new BookReturnedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $readerId)
+                new BookReturnedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn)
             ])
             ->when('return')
-            ->then(BookNotLentCannotBeExtendedException::class);
+            ->then(BookNotLentCannotBeReturnedException::class);
     }
 
     public function testReturnBookLate()
@@ -116,11 +118,11 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, $lentOn, $dueOn),
             ])
             ->when('return')
-            ->then([new BookReturnedLateEvent(Calendar::getCurrentDateTime(), $bookCopyId, $readerId, Calendar::getCurrentDateTime()->diff($dueOn))]);
+            ->then([new BookReturnedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueOn)]);
     }
 
     public function testExtendBook()
@@ -134,11 +136,11 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, $lentOn, $dueOn)
             ])
             ->when('extend', [$newDue])
-            ->then([new BookLendingExtendedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $newDue)]);
+            ->then([new BookExtendedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $newDue)]);
     }
 
     public function testReturnExtendedBook()
@@ -152,19 +154,19 @@ class BookTest extends ScenarioTest
 
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId),
+                new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, self::TITLE),
                 new BookLentEvent($bookCopyId, $readerId, $lentOn, $dueOn),
-                new BookLendingExtendedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $newDue)
+                new BookExtendedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $newDue)
             ])
             ->when('return')
-            ->then([new BookReturnedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $readerId)]);
+            ->then([new BookReturnedEvent($bookCopyId, $readerId, Calendar::getCurrentDateTime(), $newDue)]);
     }
 
     public function testExtendBookThatWasNotLent()
     {
         $this
             ->given([
-                new BookAddedEvent(Calendar::getCurrentDateTime(), Uuid::uuid4())
+                new BookAddedEvent(Calendar::getCurrentDateTime(), Uuid::uuid4(), self::TITLE)
             ])
             ->when('extend', [Calendar::getCurrentDateTime()->modify('+30 days')])
             ->then(BookNotLentCannotBeExtendedException::class);

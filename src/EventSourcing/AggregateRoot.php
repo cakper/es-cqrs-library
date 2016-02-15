@@ -2,14 +2,21 @@
 declare(strict_types = 1);
 namespace EventSourcing;
 
-class AggregateRoot
+use Ramsey\Uuid\UuidInterface;
+
+abstract class AggregateRoot
 {
+    const VERSION_NEW = 0;
+
     private $changes = [];
-    private $version = 0;
+    private $version = self::VERSION_NEW;
 
     protected function __construct()
     {
     }
+
+    abstract public function getAggregateId() : UuidInterface;
+    abstract public static function getType() : string;
 
     public static function loadFromHistory(array $events)
     {
@@ -57,7 +64,7 @@ class AggregateRoot
         return $this->version;
     }
 
-    public function getInitialVersion() : int
+    public function getOriginatingVersion() : int
     {
         return $this->version - count($this->changes);
     }

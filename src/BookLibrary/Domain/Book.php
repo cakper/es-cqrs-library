@@ -33,34 +33,22 @@ class Book extends AggregateRoot
         $this->lent = false;
     }
 
-
-    protected function applyReturnedLate(BookReturnedLateEvent $bookCopyReturnedLateEvent)
-    {
-        $this->readerId = null;
-        $this->dueOn = null;
-        $this->lent = false;
-    }
-
-    protected function applyExtension(BookLendingExtendedEvent $bookCopyLendingExtendedEvent)
+    protected function applyExtended(BookExtendedEvent $bookCopyLendingExtendedEvent)
     {
         $this->dueOn = $bookCopyLendingExtendedEvent->getNewDueDate();
     }
 
-    public static function add(UuidInterface $bookCopyId)
+    public static function add(UuidInterface $bookCopyId, string $title)
     {
         $copy = new self;
 
-        $copy->apply(new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId));
+        $copy->apply(new BookAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $title));
 
         return $copy;
     }
 
     public function lendTo(UuidInterface $readerId, DateTimeImmutable $dueDate)
     {
-        if ($this->readerId == $readerId) {
-            return;
-        }
-
         if ($this->readerId instanceof UuidInterface) {
             throw new BookAlreadyLentException;
         }
@@ -71,24 +59,28 @@ class Book extends AggregateRoot
     public function return ()
     {
         if (!$this->lent) {
-            throw new BookNotLentCannotBeExtendedException;
+            throw new BookNotLentCannotBeReturnedException;
         }
 
-        $returnedOn = Calendar::getCurrentDateTime();
-
-        if ($this->dueOn < $returnedOn) {
-            return $this->apply(new BookReturnedLateEvent($returnedOn, $this->bookCopyId, $this->readerId, $returnedOn->diff($this->dueOn)));
-        }
-
-        $this->apply(new BookReturnedEvent($returnedOn, $this->bookCopyId, $this->readerId));
+        $this->apply(new BookReturnedEvent($this->bookCopyId, $this->readerId, Calendar::getCurrentDateTime(), $this->dueOn));
     }
 
     public function extend(DateTimeImmutable $newDue)
     {
         if (!$this->lent) {
-            throw new BookNotLentCannotBeExtendedException();
+            throw new BookNotLentCannotBeExtendedException;
         }
 
-        $this->apply(new BookLendingExtendedEvent(Calendar::getCurrentDateTime(), $this->bookCopyId, $newDue));
+        $this->apply(new BookExtendedEvent($this->bookCopyId, $this->readerId, Calendar::getCurrentDateTime(), $newDue));
+    }
+
+    public function getAggregateId() : UuidInterface
+    {
+        return $this->bookCopyId;
+    }
+
+    public static function getType() : string
+    {
+        return 'book';
     }
 }
