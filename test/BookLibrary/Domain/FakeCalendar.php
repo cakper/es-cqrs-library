@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 namespace test\BookLibrary\Domain;
 
-use BookLibrary\Domain\Calendar;
+use BookLibrary\Calendar;
 use DateTimeImmutable;
 use ReflectionClass;
 

@@ -6,35 +6,16 @@ use DateInterval;
 use DateTimeImmutable;
 use EventSourcing\AggregateId;
 use EventSourcing\Event;
+use Ramsey\Uuid\UuidInterface;
 
 class BookCopyReturnedLateEvent implements Event
 {
-    /**
-     * @var BookCopyId
-     */
     private $bookCopyId;
-    /**
-     * @var ReaderId
-     */
     private $readerId;
-    /**
-     * @var DateTimeImmutable
-     */
     private $returnedOn;
-    /**
-     * @var DateInterval
-     */
     private $lateBy;
 
-    /**
-     * BookReturnedLateEvent constructor.
-     *
-     * @param DateTimeImmutable $returnedOn
-     * @param BookCopyId        $bookCopyId
-     * @param ReaderId          $readerId
-     * @param DateInterval      $lateBy
-     */
-    public function __construct(DateTimeImmutable $returnedOn, BookCopyId $bookCopyId, ReaderId $readerId, DateInterval $lateBy)
+    public function __construct(DateTimeImmutable $returnedOn, UuidInterface $bookCopyId, UuidInterface $readerId, DateInterval $lateBy)
     {
         $this->bookCopyId = $bookCopyId;
         $this->readerId = $readerId;
@@ -42,12 +23,12 @@ class BookCopyReturnedLateEvent implements Event
         $this->lateBy = $lateBy;
     }
 
-    public function getAggregateId() : AggregateId
+    public function getAggregateId() : UuidInterface
     {
         return $this->bookCopyId;
     }
 
-    public function getReaderId() : ReaderId
+    public function getReaderId() : UuidInterface
     {
         return $this->readerId;
     }

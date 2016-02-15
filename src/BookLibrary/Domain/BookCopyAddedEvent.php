@@ -3,57 +3,33 @@ declare(strict_types = 1);
 namespace BookLibrary\Domain;
 
 use DateTimeImmutable;
-use EventSourcing\AggregateId;
 use EventSourcing\Event;
+use Ramsey\Uuid\UuidInterface;
 
 class BookCopyAddedEvent implements Event
 {
-    /**
-     * @var BookCopyId
-     */
     private $bookCopyId;
 
-    /**
-     * @var Isbn10
-     */
-    private $bookEditionId;
-    /**
-     * @var DateTimeImmutable
-     */
     private $addedOn;
 
-    /**
-     * BookCopyAddedEvent constructor.
-     *
-     * @param DateTimeImmutable $addedOn
-     * @param BookCopyId        $bookCopyId
-     * @param Isbn10            $bookEditionId
-     */
-    public function __construct(DateTimeImmutable $addedOn, BookCopyId $bookCopyId, Isbn10 $bookEditionId)
+    public function __construct(DateTimeImmutable $addedOn, UuidInterface $bookCopyId)
     {
         $this->bookCopyId = $bookCopyId;
-        $this->bookEditionId = $bookEditionId;
         $this->addedOn = $addedOn;
     }
 
-    /**
-     * @return DateTimeImmutable
-     */
-    public function getAddedOn()
+    public function getAddedOn() : DateTimeImmutable
     {
         return $this->addedOn;
     }
 
-    public function getAggregateId() : AggregateId
+    public function getBookCopyId() : UuidInterface
     {
         return $this->bookCopyId;
     }
 
-    /**
-     * @return Isbn10
-     */
-    public function getBookEditionId()
+    public function getAggregateId() : UuidInterface
     {
-        return $this->bookEditionId;
+        return $this->bookCopyId;
     }
 }

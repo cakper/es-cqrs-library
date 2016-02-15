@@ -3,42 +3,27 @@ declare(strict_types = 1);
 namespace BookLibrary\Domain;
 
 use DateTimeImmutable;
-use EventSourcing\AggregateId;
 use EventSourcing\Event;
+use Ramsey\Uuid\UuidInterface;
 
 class BookCopyLentEvent implements Event
 {
-    /**
-     * @var BookCopyId
-     */
     private $bookCopyId;
-    /**
-     * @var ReaderId
-     */
     private $readerId;
-    /**
-     * @var DateTimeImmutable
-     */
     private $lentOn;
-    /**
-     * @var DateTimeImmutable
-     */
     private $dueOn;
 
-    /**
-     * BookLentEvent constructor.
-     *
-     * @param DateTimeImmutable $lentOn
-     * @param DateTimeImmutable $dueOn
-     * @param BookCopyId        $bookCopyId
-     * @param ReaderId          $readerId
-     */
-    public function __construct(DateTimeImmutable $lentOn, DateTimeImmutable $dueOn, BookCopyId $bookCopyId, ReaderId $readerId)
+    public function __construct(UuidInterface $bookCopyId, UuidInterface $readerId, DateTimeImmutable $lentOn, DateTimeImmutable $dueOn)
     {
         $this->bookCopyId = $bookCopyId;
         $this->readerId = $readerId;
         $this->lentOn = $lentOn;
         $this->dueOn = $dueOn;
+    }
+
+    public function getAggregateId() : UuidInterface
+    {
+        $this->bookCopyId;
     }
 
     public function getDueOn() : DateTimeImmutable
@@ -51,12 +36,7 @@ class BookCopyLentEvent implements Event
         return $this->lentOn;
     }
 
-    public function getAggregateId() : AggregateId
-    {
-        return $this->bookCopyId;
-    }
-
-    public function getReaderId() : ReaderId
+    public function getReaderId() : UuidInterface
     {
         return $this->readerId;
     }

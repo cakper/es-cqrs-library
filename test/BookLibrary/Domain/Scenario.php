@@ -89,9 +89,7 @@ class Scenario
      */
     public function then($eventsOrException)
     {
-        if (is_array($eventsOrException)) {
-            $this->assert->assertEquals($eventsOrException, $this->aggregateRoot->getChanges());
-        } elseif (is_a($eventsOrException, Exception::class, true)) {
+        if (is_a($eventsOrException, Exception::class, true)) {
             if (is_null($this->exception)) {
                 throw new \LogicException(sprintf('Expected "%s" to be thrown from "%s::%s"', $eventsOrException, $this->aggregateClass, $this->method));
             }
@@ -99,6 +97,10 @@ class Scenario
             if (!is_a($this->exception, $eventsOrException, true)) {
                 throw new \LogicException(sprintf('Expected "%s" to be thrown from "%s::%s", got "%s"', $eventsOrException, $this->aggregateClass, $this->method, get_class($this->exception)));
             }
+        } elseif ($this->exception instanceof Exception) {
+            throw new \LogicException(sprintf('Expected events but got Exception "%s"', get_class($this->exception)));
+        } elseif (is_array($eventsOrException)) {
+            $this->assert->assertEquals($eventsOrException, $this->aggregateRoot->getChanges());
         } else {
             throw new \LogicException('Unexpected expectation');
         }

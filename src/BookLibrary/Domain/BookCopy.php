@@ -2,93 +2,85 @@
 declare(strict_types = 1);
 namespace BookLibrary\Domain;
 
+use BookLibrary\Calendar;
 use DateTimeImmutable;
 use EventSourcing\AggregateRoot;
+use Ramsey\Uuid\UuidInterface;
 
-class BookCopyState extends AggregateRoot
+class BookCopy extends AggregateRoot
 {
-    /**
-     * @var BookCopyId
-     */
-    protected $bookCopyId;
+    private $bookCopyId = null;
+    private $readerId = null;
+    private $dueOn = null;
+    private $lent = false;
 
-    /**
-     * @var boolean
-     */
-    protected $lent;
-
-    /**
-     * @var ReaderId
-     */
-    protected $readerId;
-
-    /**
-     * @var DateTimeImmutable
-     */
-    protected $dueOn;
-
-    protected function applyCopyAdded(BookCopyAddedEvent $copyAddedEvent)
+    protected function applyAdded(BookCopyAddedEvent $bookCopyAddedEvent)
     {
-        $this->bookCopyId = $copyAddedEvent->getAggregateId();
+        $this->bookCopyId = $bookCopyAddedEvent->getAggregateId();
     }
 
-    protected function applyLent(BookCopyLentEvent $lentEvent)
+    protected function applyLent(BookCopyLentEvent $bookCopyLentEvent)
     {
+        $this->readerId = $bookCopyLentEvent->getReaderId();
+        $this->dueOn = $bookCopyLentEvent->getDueOn();
         $this->lent = true;
-        $this->readerId = $lentEvent->getReaderId();
-        $this->dueOn = $lentEvent->getDueOn();
     }
 
-    protected function applyReturned(BookCopyReturnedEvent $returnedEvent)
+    protected function applyReturned(BookCopyReturnedEvent $bookCopyReturnedEvent)
     {
+        $this->readerId = null;
+        $this->dueOn = null;
         $this->lent = false;
     }
 
-    protected function applyReturnedLate(BookCopyReturnedLateEvent $returnedLateEvent)
+
+    protected function applyReturnedLate(BookCopyReturnedLateEvent $bookCopyReturnedLateEvent)
     {
+        $this->readerId = null;
+        $this->dueOn = null;
         $this->lent = false;
     }
 
-    protected function applyExtension(BookCopyLendingExtendedEvent $bookExtendedEvent)
+    protected function applyExtension(BookCopyLendingExtendedEvent $bookCopyLendingExtendedEvent)
     {
-        $this->dueOn = $bookExtendedEvent->getNewDueDate();
+        $this->dueOn = $bookCopyLendingExtendedEvent->getNewDueDate();
     }
-}
 
-class BookCopy extends BookCopyState
-{
-    public static function add(BookCopyId $bookCopyId, Isbn10 $bookEditionIsbn)
+    public static function add(UuidInterface $bookCopyId)
     {
         $copy = new self;
-        $copy->apply(new BookCopyAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId, $bookEditionIsbn));
+
+        $copy->apply(new BookCopyAddedEvent(Calendar::getCurrentDateTime(), $bookCopyId));
 
         return $copy;
     }
 
-    public function lendTo(ReaderId $readerId, DateTimeImmutable $dueOn)
+    public function lendTo(UuidInterface $readerId, DateTimeImmutable $dueDate)
     {
-        if ($this->lent) {
-            throw new BookCopyAlreadyLentException();
+        if ($this->readerId == $readerId) {
+            return;
         }
 
-        $this->apply(new BookCopyLentEvent(Calendar::getCurrentDateTime(), $dueOn, $this->bookCopyId, $readerId));
+        if ($this->readerId instanceof UuidInterface) {
+            throw new BookCopyAlreadyLentException;
+        }
+
+        $this->apply(new BookCopyLentEvent($this->bookCopyId, $readerId, Calendar::getCurrentDateTime(), $dueDate));
     }
 
     public function return ()
     {
         if (!$this->lent) {
-            throw new BookCopyNotLentCannotBeReturnedException();
+            throw new BookCopyNotLentCannotBeExtendedException;
         }
 
-        $now = Calendar::getCurrentDateTime();
+        $returnedOn = Calendar::getCurrentDateTime();
 
-        if ($now >= $this->dueOn) {
-            $this->apply(new BookCopyReturnedLateEvent($now, $this->bookCopyId, $this->readerId, $now->diff($this->dueOn)));
-
-            return;
+        if ($this->dueOn < $returnedOn) {
+            return $this->apply(new BookCopyReturnedLateEvent($returnedOn, $this->bookCopyId, $this->readerId, $returnedOn->diff($this->dueOn)));
         }
 
-        $this->apply(new BookCopyReturnedEvent($now, $this->bookCopyId, $this->readerId));
+        $this->apply(new BookCopyReturnedEvent($returnedOn, $this->bookCopyId, $this->readerId));
     }
 
     public function extend(DateTimeImmutable $newDue)
