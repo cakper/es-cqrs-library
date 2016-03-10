@@ -25,7 +25,7 @@ class BookLentEvent implements Event
 
     public function getAggregateId() : UuidInterface
     {
-        $this->bookCopyId;
+        return $this->bookCopyId;
     }
 
     public function getDueOn() : DateTimeImmutable

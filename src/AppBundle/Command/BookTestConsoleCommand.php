@@ -30,12 +30,14 @@ class BookTestConsoleCommand extends ContainerAwareCommand
 
         $commandBus->handle(new AddBookCommand($bookId, 'Domain-Driven Design'));
 
-        $output->writeln((string) $bookId);
+        $output->writeln((string)$bookId);
 
         $commandBus->handle(new LendBookCommand($bookId, $readerId, Calendar::getCurrentDateTime()->modify('+30 days')));
         $commandBus->handle(new ExtendBookCommand($bookId, Calendar::getCurrentDateTime()->modify('+60 days')));
         $commandBus->handle(new ReturnBookCommand($bookId));
         $commandBus->handle(new LendBookCommand($bookId, $readerId, Calendar::getCurrentDateTime()->modify('+30 days')));
-        $commandBus->handle(new ReturnBookCommand($bookId));
+        if (rand(0, 1)) {
+            $commandBus->handle(new ReturnBookCommand($bookId));
+        }
     }
 }

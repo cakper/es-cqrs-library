@@ -31,6 +31,9 @@ services:
     library.book_inventory:
         class: BookLibrary\Domain\EventSourcedBookInventory
         arguments: ["@doctrine.orm.default_entity_manager"]
+    library.projections.available_books:
+        class: BookLibrary\Projections\AvailableBooksProjection
+        arguments: ["@doctrine.orm.default_entity_manager"]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
