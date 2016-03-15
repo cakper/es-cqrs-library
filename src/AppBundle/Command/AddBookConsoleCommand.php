@@ -27,7 +27,7 @@ class AddBookConsoleCommand extends ContainerAwareCommand
         $bookId = Uuid::uuid4();
         $command = new DomainAddBookCommand($bookId, $input->getArgument('title'));
 
-        $this->getContainer()->get('tactician.commandbus.default')->handle($command);
+        $this->getContainer()->get('command_bus')->handle($command);
 
         $output->writeln((string) $bookId);
     }

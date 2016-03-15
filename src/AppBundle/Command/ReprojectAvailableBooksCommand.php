@@ -4,10 +4,7 @@ namespace AppBundle\Command;
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use EventSourcing\DelegateMapper;
-use EventSourcing\Event as DomainEvent;
-use EventSourcing\Events;
 use Infrastructure\EventStore\Doctrine\BookAvailableView;
-use Infrastructure\EventStore\Doctrine\Event;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,48 +27,24 @@ class ReprojectAvailableBooksCommand extends ContainerAwareCommand
             $q = $dbPlatform->getTruncateTableSql($cmd->getTableName());
             $connection->executeUpdate($q);
             $connection->commit();
-            $output->writeln('Projection cleared');
         } catch (\Exception $e) {
             $connection->rollback();
         }
 
-//        $eventRepository = $em->getRepository(Event::class);
-//        $events = $eventRepository->findAll();
+        $query = $em->createQuery("SELECT e FROM EventStore:Event e");
 
-        $paginator = new Paginator($em->createQuery("SELECT e FROM EventStore:Event e")
-            ->setFirstResult(0)
-            ->setMaxResults(100));
-
-//        $c = count($paginator);
-
-//        $output->writeln(sprintf('Reprojecting %s events', count($events)));
         $projector = $this->getContainer()->get('library.projections.available_books');
 
-        $counter = 0;
+        foreach ($query->iterate() as $row) {
 
-        foreach ($paginator as $event) {
-
+            $event = $row[0];
             try {
-                $counter++;
                 DelegateMapper::call($projector, 'handle', $event->getDomainEvent());
                 $em->detach($event);
-                echo $counter.PHP_EOL;
             } catch (\Exception $e) {
 
             }
+            $em->detach($row[0]);
         }
-
-//        $events = new Events(array_map(function (Event $event) : DomainEvent {
-//            return $event->getDomainEvent();
-//        }, $events));
-
-//
-//        $events->each(function (DomainEvent $domainEvent) use ($projector) {
-//            try {
-//                DelegateMapper::call($projector, 'handle', $domainEvent);
-//            } catch (\Exception $e) {
-//
-//            }
-//        });
     }
 }

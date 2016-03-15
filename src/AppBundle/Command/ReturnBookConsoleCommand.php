@@ -30,6 +30,6 @@ class ReturnBookConsoleCommand extends ContainerAwareCommand
     {
         $command = new ReturnBookCommand(Uuid::fromString($input->getArgument('book-id')));
 
-        $this->getContainer()->get('tactician.commandbus.default')->handle($command);
+        $this->getContainer()->get('command_bus')->handle($command);
     }
 }

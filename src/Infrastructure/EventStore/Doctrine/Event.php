@@ -4,31 +4,42 @@ namespace Infrastructure\EventStore\Doctrine;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use EventSourcing\Event as DomainEvent;
 use Ramsey\Uuid\UuidInterface;
 
 /**
  * @Entity()
- * @Table(name="event", uniqueConstraints={})
+ * @Table(
+ * name="event",
+ * uniqueConstraints={@UniqueConstraint(name="aggregate_version_idx", columns={"aggregate_id", "version"})},
+ * indexes={@Index(name="aggregate_id_idx", columns={"aggregate_id"})}
+ * )
  */
 class Event
 {
     /**
-     * @Id
-     * @Column(type="string", length=36, name="aggregate_id", nullable=false)
+     * @Id()
+     * @Column(name="id", type="integer")
+     * @GeneratedValue(strategy="AUTO")
      */
-    private $aggregateId;
+    public $id;
     /**
-     * @Id
+     * @Column(type="guid", name="aggregate_id", nullable=false)
+     */
+    public $aggregateId;
+    /**
      * @Column(type="integer", nullable=false)
      */
-    private $version;
+    public $version;
     /**
      * @Column(type="text", nullable=false)
      */
-    private $data;
+    public $data;
 
     public function __construct(UuidInterface $aggregateId, int $version, DomainEvent $event)
     {

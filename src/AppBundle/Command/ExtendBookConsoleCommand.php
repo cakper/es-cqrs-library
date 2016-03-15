@@ -28,6 +28,6 @@ class ExtendBookConsoleCommand extends ContainerAwareCommand
         $bookId = Uuid::fromString($input->getArgument('book-id'));
         $command = new ExtendBookCommand($bookId, Calendar::getCurrentDateTime()->modify('+60 days'));
 
-        $this->getContainer()->get('tactician.commandbus.default')->handle($command);
+        $this->getContainer()->get('command_bus')->handle($command);
     }
 }

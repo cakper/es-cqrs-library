@@ -16,16 +16,17 @@ abstract class AggregateRoot
     }
 
     abstract public function getAggregateId() : UuidInterface;
+
     abstract public static function getType() : string;
 
-    public static function loadFromHistory(array $events)
+    public static function loadFromHistory(EventStream $events)
     {
         /** @var self $aggregate */
         $aggregate = new static;
 
-        foreach ($events as $event) {
+        $events->each(function (Event $event) use ($aggregate) {
             $aggregate->apply($event, false);
-        }
+        });
 
         return $aggregate;
     }
@@ -42,11 +43,11 @@ abstract class AggregateRoot
     }
 
     /**
-     * Event[]
+     * Events
      */
-    public function getChanges() : array
+    public function getChanges() : EventStream
     {
-        return $this->changes;
+        return new EventStream($this->changes);
     }
 
     public function markChangesAsCommitted()

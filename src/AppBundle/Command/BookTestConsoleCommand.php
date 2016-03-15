@@ -22,13 +22,13 @@ class BookTestConsoleCommand extends ContainerAwareCommand
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $commandBus = $this->getContainer()->get('tactician.commandbus.default');
+    {       
+        $commandBus = $this->getContainer()->get('command_bus');
 
         $bookId = Uuid::uuid4();
         $readerId = Uuid::uuid4();
 
-        $commandBus->handle(new AddBookCommand($bookId, 'Domain-Driven Design'));
+        $commandBus->handle(new AddBookCommand($bookId, 'Domain-Driven Design ' . rand(1, 1000)));
 
         $output->writeln((string)$bookId);
 

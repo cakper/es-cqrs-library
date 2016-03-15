@@ -9,31 +9,42 @@ services:
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: tactician.handler, command: BookLibrary\Application\AddBookCommand }
+            - { name: command_handler, handles: BookLibrary\Application\AddBookCommand }
     library.lend_book_handler:
         class: BookLibrary\Application\LendBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: tactician.handler, command: BookLibrary\Application\LendBookCommand }
+            - { name: command_handler, handles: BookLibrary\Application\LendBookCommand }
     library.return_book_handler:
         class: BookLibrary\Application\ReturnBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: tactician.handler, command: BookLibrary\Application\ReturnBookCommand }
+            - { name: command_handler, handles: BookLibrary\Application\ReturnBookCommand }
     library.extend_book_handler:
         class: BookLibrary\Application\ExtendBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: tactician.handler, command: BookLibrary\Application\ExtendBookCommand }
+            - { name: command_handler, handles: BookLibrary\Application\ExtendBookCommand }
     library.book_inventory:
         class: BookLibrary\Domain\EventSourcedBookInventory
-        arguments: ["@doctrine.orm.default_entity_manager"]
+        arguments: ["@library.event_sourcing.event_sourced_repository"]
     library.projections.available_books:
         class: BookLibrary\Projections\AvailableBooksProjection
         arguments: ["@doctrine.orm.default_entity_manager"]
+        tags:
+            - { name: event_subscriber, subscribes_to: BookLibrary\Domain\BookAddedEvent, method: handleNewBook }
+            - { name: event_subscriber, subscribes_to: BookLibrary\Domain\BookLentEvent, method: handleLent }
+            - { name: event_subscriber, subscribes_to: BookLibrary\Domain\BookReturnedEvent, method: handleReturned }
+    library.event_sourcing.event_sourced_repository:
+        class: EventSourcing\EventSourcedRepository
+        arguments: ["@library.event_sourcing.event_store", "@event_bus"]
+    library.event_sourcing.event_store:
+        class: Infrastructure\EventStore\Doctrine\DoctrineEventStore
+        arguments: ["@doctrine.orm.default_entity_manager"]
+
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

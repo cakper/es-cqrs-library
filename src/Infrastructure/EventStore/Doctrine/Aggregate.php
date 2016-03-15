@@ -16,13 +16,15 @@ class Aggregate
 {
     /**
      * @Id
-     * @Column(type="string", length=36, name="aggregate_id", nullable=false)
+     * @Column(type="guid", name="aggregate_id", nullable=false)
      */
     public $aggregateId;
+    
     /**
      * @Column(type="string", length=255, nullable=false)
      */
     public $type;
+
     /**
      * @Column(type="integer")
      */

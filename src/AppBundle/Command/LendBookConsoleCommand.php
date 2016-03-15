@@ -33,6 +33,6 @@ class LendBookConsoleCommand extends ContainerAwareCommand
     {
         $command = new LendBookCommand(Uuid::fromString($input->getArgument('book-id')), Uuid::fromString($input->getArgument('reader-id')), Calendar::getCurrentDateTime()->modify('+30 days'));
 
-        $this->getContainer()->get('tactician.commandbus.default')->handle($command);
+        $this->getContainer()->get('command_bus')->handle($command);
     }
 }

@@ -15,7 +15,7 @@ class BookAvailableView
 {
     /**
      * @Id
-     * @Column(type="string", length=36, name="book_id", nullable=false)
+     * @Column(type="guid", name="book_id", nullable=false)
      */
     public $bookId;
 

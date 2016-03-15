@@ -7,7 +7,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface BookInventory
 {
-    public function get(UuidInterface $bookId);
+    public function get(UuidInterface $bookId) : Book;
 
     public function save(Book $book);
 }

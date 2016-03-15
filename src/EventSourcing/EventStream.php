@@ -4,7 +4,7 @@ namespace EventSourcing;
 
 use Countable;
 
-class Events implements Countable
+class EventStream implements Countable
 {
     private $events;
 
@@ -35,11 +35,21 @@ class Events implements Countable
     /**
      * @param callable $callback
      *
-     * @return Events
+     * @return EventStream
      */
-    public function filter(callable $callback) : Events
+    public function filter(callable $callback) : EventStream
     {
         return new static(array_filter($this->events), $callback);
+    }
+
+    /**
+     * @param callable $callback
+     *
+     * @return array
+     */
+    public function map(callable $callback) : array
+    {
+        return array_map($callback, $this->events);
     }
 
     /**
