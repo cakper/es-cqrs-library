@@ -4,7 +4,6 @@ namespace EventSourcing;
 
 use Infrastructure\Domain\Type;
 use Ramsey\Uuid\UuidInterface;
-use SimpleBus\Message\Bus\MessageBus;
 
 class EventSourcedRepository
 {
@@ -14,11 +13,11 @@ class EventSourcedRepository
     private $eventStore;
 
     /**
-     * @var MessageBus
+     * @var EventBus
      */
     private $eventBus;
 
-    public function __construct(EventStore $eventStore, MessageBus $eventBus)
+    public function __construct(EventStore $eventStore, EventBus $eventBus)
     {
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;

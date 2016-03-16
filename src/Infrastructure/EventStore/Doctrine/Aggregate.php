@@ -30,7 +30,7 @@ class Aggregate
      */
     public $version;
 
-    public function __construct(UuidInterface $aggregateId, string $type, int $version = 0)
+    public function __construct(UuidInterface $aggregateId, int $type, int $version = 0)
     {
         $this->aggregateId = $aggregateId;
         $this->type = $type;

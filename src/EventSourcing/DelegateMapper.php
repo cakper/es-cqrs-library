@@ -2,7 +2,6 @@
 declare(strict_types = 1);
 namespace EventSourcing;
 
-use LogicException;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -75,7 +74,7 @@ class DelegateMapper
         if (!array_key_exists($objectClass, self::$mappings)) {
             self::$mappings[$objectClass] = self::findMappingFor($objectClass, $methodPrefix);
         }
-        
+
         return array_keys(self::$mappings[$objectClass]);
     }
 }

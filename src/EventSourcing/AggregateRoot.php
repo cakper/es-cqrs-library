@@ -42,9 +42,6 @@ abstract class AggregateRoot
         $this->version++;
     }
 
-    /**
-     * Events
-     */
     public function getChanges() : Iterator
     {
         return new ArrayIterator($this->changes);

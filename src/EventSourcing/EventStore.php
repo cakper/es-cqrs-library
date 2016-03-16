@@ -7,7 +7,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface EventStore
 {
-    public function saveEvents(UuidInterface $aggregateId, string $aggregateType, int $originatingVersion, Iterator $eventStream);
+    public function saveEvents(UuidInterface $aggregateId, int $aggregateType, int $originatingVersion, Iterator $events);
 
     public function findEventsForAggregate(UuidInterface $aggregateId) : Iterator;
 

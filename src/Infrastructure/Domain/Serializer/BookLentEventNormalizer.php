@@ -23,7 +23,6 @@ class BookLentEventNormalizer implements NormalizerInterface, DenormalizerInterf
 
     public function normalize($object, $format = null, array $context = [])
     {
-        /** @var $object BookLentEvent */
         return [
             'id' => $object->getBookCopyId()->toString(),
             'reader_id' => $object->getReaderId()->toString(),

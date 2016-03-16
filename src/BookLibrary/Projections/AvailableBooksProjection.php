@@ -56,6 +56,11 @@ class AvailableBooksProjection extends DoctrineProjection
         $this->entityManager->flush($book);
     }
 
+    public function findAll()
+    {
+        return $this->repository->findAll();
+    }
+
     public function getViewClasses() : array
     {
         return [BookAvailableView::class];

@@ -23,11 +23,10 @@ class BookAddedEventNormalizer implements NormalizerInterface, DenormalizerInter
 
     public function normalize($object, $format = null, array $context = [])
     {
-        /** @var $object BookAddedEvent */
         return [
-            'id'       => (string)$object->getBookCopyId(),
+            'id' => (string)$object->getBookCopyId(),
             'added_on' => $object->getAddedOn()->getTimestamp(),
-            'title'    => $object->getTitle()
+            'title' => $object->getTitle()
         ];
     }
 

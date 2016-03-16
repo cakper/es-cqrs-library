@@ -23,7 +23,6 @@ class BookExtendedEventNormalizer implements NormalizerInterface, DenormalizerIn
 
     public function normalize($object, $format = null, array $context = [])
     {
-        /** @var $object BookExtendedEvent */
         return [
             'id' => $object->getBookCopyId()->toString(),
             'reader_id' => $object->getReaderId()->toString(),

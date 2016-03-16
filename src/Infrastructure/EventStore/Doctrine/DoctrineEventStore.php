@@ -32,9 +32,9 @@ class DoctrineEventStore implements EventStore
         $this->serializer = $serializer;
     }
 
-    public function saveEvents(UuidInterface $aggregateId, string $aggregateType, int $originatingVersion, Iterator $eventStream)
+    public function saveEvents(UuidInterface $aggregateId, int $aggregateType, int $originatingVersion, Iterator $events)
     {
-        $this->entityManager->transactional(function () use ($aggregateId, $aggregateType, $originatingVersion, $eventStream) {
+        $this->entityManager->transactional(function () use ($aggregateId, $aggregateType, $originatingVersion, $events) {
             $aggregate = $this->entityManager->find(Aggregate::class, $aggregateId);
             if (!$aggregate instanceof Aggregate) {
                 $aggregate = new Aggregate($aggregateId, $aggregateType, AggregateRoot::VERSION_NEW);
@@ -44,7 +44,7 @@ class DoctrineEventStore implements EventStore
                 throw new OptimisticConcurrencyException();
             }
 
-            foreach ($eventStream as $domainEvent) {
+            foreach ($events as $domainEvent) {
                 $event = new Event($aggregateId, ++$originatingVersion, $this->serializer->serialize($domainEvent, 'json'), Type::forEvent($domainEvent));
                 $this->entityManager->persist($event);
             }

@@ -1,6 +1,6 @@
 <?php
 
-namespace EventSourcing\ReadModel;
+namespace EventSourcing;
 
 interface Projection {
     public function flush();

@@ -3,7 +3,7 @@
 namespace Infrastructure\EventStore\Doctrine;
 
 use Doctrine\ORM\EntityManager;
-use EventSourcing\ReadModel\Projection;
+use EventSourcing\Projection;
 
 abstract class DoctrineProjection implements Projection
 {
