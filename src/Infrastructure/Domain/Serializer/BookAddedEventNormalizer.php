@@ -4,13 +4,13 @@ namespace Infrastructure\Domain\Serializer;
 
 use BookLibrary\Domain\BookAddedEvent;
 use EventSourcing\Calendar;
+use Infrastructure\Domain\Type;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class BookAddedEventNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-
     public function supportsNormalization($data, $format = null)
     {
         return $data instanceof BookAddedEvent;
@@ -18,14 +18,14 @@ class BookAddedEventNormalizer implements NormalizerInterface, DenormalizerInter
 
     public function supportsDenormalization($data, $type, $format = null)
     {
-        return $type === BookAddedEvent::class;
+        return $type === Type::forEventClass(BookAddedEvent::class);
     }
 
     public function normalize($object, $format = null, array $context = [])
     {
         /** @var $object BookAddedEvent */
         return [
-            'id'       => (string)$object->getAggregateId(),
+            'id'       => (string)$object->getBookCopyId(),
             'added_on' => $object->getAddedOn()->getTimestamp(),
             'title'    => $object->getTitle()
         ];

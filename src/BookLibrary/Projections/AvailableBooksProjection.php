@@ -34,23 +34,23 @@ class AvailableBooksProjection
 
     public function handleNewBook(BookAddedEvent $event)
     {
-        $book = new BookAvailableView($event->getAggregateId(), $event->getTitle());
+        $book = new BookAvailableView($event->getBookCopyId(), $event->getTitle());
         $this->entityManager->persist($book);
         $this->entityManager->flush($book);
 
-        $this->titles[$event->getAggregateId()->toString()] = $event->getTitle();
+        $this->titles[$event->getBookCopyId()->toString()] = $event->getTitle();
     }
 
     public function handleLent(BookLentEvent $event)
     {
-        $view = $this->repository->find($event->getAggregateId());
+        $view = $this->repository->find($event->getBookCopyId());
         $this->entityManager->remove($view);
         $this->entityManager->flush($view);
     }
 
     public function handleReturned(BookReturnedEvent $event)
     {
-        $book = new BookAvailableView($event->getAggregateId(), $this->titles[$event->getAggregateId()->toString()]);
+        $book = new BookAvailableView($event->getBookCopyId(), $this->titles[$event->getBookCopyId()->toString()]);
         $this->entityManager->persist($book);
         $this->entityManager->flush($book);
     }

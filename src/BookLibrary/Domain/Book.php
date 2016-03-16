@@ -16,7 +16,7 @@ class Book extends AggregateRoot
 
     protected function applyAdded(BookAddedEvent $bookCopyAddedEvent)
     {
-        $this->bookCopyId = $bookCopyAddedEvent->getAggregateId();
+        $this->bookCopyId = $bookCopyAddedEvent->getBookCopyId();
     }
 
     protected function applyLent(BookLentEvent $bookCopyLentEvent)
@@ -74,13 +74,8 @@ class Book extends AggregateRoot
         $this->apply(new BookExtendedEvent($this->bookCopyId, $this->readerId, Calendar::getCurrentDateTime(), $newDue));
     }
 
-    public function getAggregateId() : UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->bookCopyId;
-    }
-
-    public static function getType() : string
-    {
-        return 'book';
     }
 }

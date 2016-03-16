@@ -15,10 +15,8 @@ abstract class AggregateRoot
     {
     }
 
-    abstract public function getAggregateId() : UuidInterface;
-
-    abstract public static function getType() : string;
-
+    abstract public function getId() : UuidInterface;
+    
     public static function loadFromHistory(EventStream $events)
     {
         /** @var self $aggregate */

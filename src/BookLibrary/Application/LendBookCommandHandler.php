@@ -17,10 +17,6 @@ class LendBookCommandHandler
     public function handle(LendBookCommand $command)
     {
         $book = $this->bookInventory->get($command->bookId);
-        if (!$book instanceof Book) {
-            throw new \InvalidArgumentException('Book not found');
-        }
-
         $book->lendTo($command->readerId, $command->dueOn);
         $this->bookInventory->save($book);
     }

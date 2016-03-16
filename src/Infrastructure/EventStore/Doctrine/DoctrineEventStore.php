@@ -8,7 +8,9 @@ use EventSourcing\Event as DomainEvent;
 use EventSourcing\EventStore;
 use EventSourcing\EventStream;
 use EventSourcing\OptimisticConcurrencyException;
+use Infrastructure\Domain\Type;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Serializer\Serializer;
 
 class DoctrineEventStore implements EventStore
 {
@@ -17,9 +19,15 @@ class DoctrineEventStore implements EventStore
      */
     private $entityManager;
 
-    public function __construct(EntityManager $entityManager)
+    /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    public function __construct(EntityManager $entityManager, Serializer $serializer)
     {
         $this->entityManager = $entityManager;
+        $this->serializer = $serializer;
     }
 
     public function saveEvents(UuidInterface $aggregateId, string $aggregateType, int $originatingVersion, EventStream $eventStream)
@@ -35,7 +43,7 @@ class DoctrineEventStore implements EventStore
             }
 
             $eventStream->each(function (DomainEvent $domainEvent) use ($aggregateId, &$originatingVersion) {
-                $event = new Event($aggregateId, ++$originatingVersion, $domainEvent);
+                $event = new Event($aggregateId, ++$originatingVersion, $this->serializer->serialize($domainEvent, 'json'), Type::forEvent($domainEvent));
                 $this->entityManager->persist($event);
             });
 
@@ -46,11 +54,11 @@ class DoctrineEventStore implements EventStore
 
     public function findEventsForAggregate(UuidInterface $aggregateId) : EventStream
     {
-        $eventRepository = $this->entityManager->getRepository(Event::class);
-        $events = $eventRepository->findByAggregateId($aggregateId);
+        $query = $this->entityManager->createQuery("SELECT e FROM EventStore:Event e WHERE e.aggregateId = :aggregateId");
+        $query->setParameter('aggregateId', $aggregateId->toString());
 
-        return new EventStream(array_map(function (Event $event) : DomainEvent {
-            return $event->getDomainEvent();
-        }, $events));
+        return new EventStream(array_map(function ($event) : DomainEvent {
+            return $this->serializer->deserialize($event['data'], $event['type'], 'json');
+        }, $query->getArrayResult()));
     }
 }

@@ -18,10 +18,6 @@ class ReturnBookCommandHandler
     public function handle(ReturnBookCommand $command)
     {
         $book = $this->bookInventory->get($command->bookId);
-        if (!$book instanceof Book) {
-            throw new \InvalidArgumentException('Book not found');
-        }
-
         $book->return();
         $this->bookInventory->save($book);
     }

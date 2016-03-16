@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use EventSourcing\Event as DomainEvent;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -17,7 +16,7 @@ use Ramsey\Uuid\UuidInterface;
  * @Table(
  * name="event",
  * uniqueConstraints={@UniqueConstraint(name="aggregate_version_idx", columns={"aggregate_id", "version"})},
- * indexes={@Index(name="aggregate_id_idx", columns={"aggregate_id"})}
+ * indexes={@Index(name="aggregate_id_idx", columns={"aggregate_id"}), @Index(name="type_idx", columns={"type"})}
  * )
  */
 class Event
@@ -28,30 +27,32 @@ class Event
      * @GeneratedValue(strategy="AUTO")
      */
     public $id;
+
     /**
      * @Column(type="guid", name="aggregate_id", nullable=false)
      */
     public $aggregateId;
+
     /**
      * @Column(type="integer", nullable=false)
      */
     public $version;
+
     /**
      * @Column(type="text", nullable=false)
      */
     public $data;
 
-    public function __construct(UuidInterface $aggregateId, int $version, DomainEvent $event)
+    /**
+     * @Column(type="integer", nullable=false)
+     */
+    public $type;
+
+    public function __construct(UuidInterface $aggregateId, int $version, string $data, int $type)
     {
         $this->aggregateId = $aggregateId;
         $this->version = $version;
-        $this->data = json_encode(['type' => get_class($event), 'data' => $event->toArray()]);
-    }
-
-    public function getDomainEvent() : DomainEvent
-    {
-        $data = json_decode($this->data, true);
-
-        return call_user_func([$data['type'], 'fromArray'], $data['data']);
+        $this->data = $data;
+        $this->type = $type;
     }
 }

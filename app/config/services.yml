@@ -43,8 +43,18 @@ services:
         arguments: ["@library.event_sourcing.event_store", "@event_bus"]
     library.event_sourcing.event_store:
         class: Infrastructure\EventStore\Doctrine\DoctrineEventStore
-        arguments: ["@doctrine.orm.default_entity_manager"]
+        arguments: ["@doctrine.orm.default_entity_manager", "@library.event_sourcing.serializer"]
+    library.event_sourcing.json_encoder:
+        class: Symfony\Component\Serializer\Encoder\JsonEncoder
+    library.event_sourcing.normalizer.book_added_event_normalizer:
+        class: Infrastructure\Domain\Serializer\BookAddedEventNormalizer
+    library.event_sourcing.normalizer.book_extended_event_normalizer:
+        class: Infrastructure\Domain\Serializer\BookExtendedEventNormalizer
+    library.event_sourcing.normalizer.book_lent_event_normalizer:
+        class: Infrastructure\Domain\Serializer\BookLentEventNormalizer
+    library.event_sourcing.normalizer.book_returned_event_normalizer:
+        class: Infrastructure\Domain\Serializer\BookReturnedEventNormalizer
+    library.event_sourcing.serializer:
+        class: Symfony\Component\Serializer\Serializer
+        arguments: [["@library.event_sourcing.normalizer.book_added_event_normalizer", "@library.event_sourcing.normalizer.book_extended_event_normalizer", "@library.event_sourcing.normalizer.book_lent_event_normalizer", "@library.event_sourcing.normalizer.book_returned_event_normalizer"], ["@library.event_sourcing.json_encoder"]]
 
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

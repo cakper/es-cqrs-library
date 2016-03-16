@@ -2,6 +2,7 @@
 
 namespace EventSourcing;
 
+use Infrastructure\Domain\Type;
 use Ramsey\Uuid\UuidInterface;
 use SimpleBus\Message\Bus\MessageBus;
 
@@ -40,8 +41,8 @@ class EventSourcedRepository
     public function save(AggregateRoot $aggregateRoot)
     {
         $this->eventStore->saveEvents(
-            $aggregateRoot->getAggregateId(),
-            $aggregateRoot::getType(),
+            $aggregateRoot->getId(),
+            Type::forAggregate($aggregateRoot),
             $aggregateRoot->getOriginatingVersion(),
             $aggregateRoot->getChanges()
         );

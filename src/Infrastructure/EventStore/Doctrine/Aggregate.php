@@ -19,18 +19,18 @@ class Aggregate
      * @Column(type="guid", name="aggregate_id", nullable=false)
      */
     public $aggregateId;
-    
+
     /**
-     * @Column(type="string", length=255, nullable=false)
+     * @Column(type="integer", nullable=false)
      */
     public $type;
 
     /**
-     * @Column(type="integer")
+     * @Column(type="integer", nullable=false)
      */
     public $version;
 
-    public function __construct(UuidInterface $aggregateId, string $type, int $version)
+    public function __construct(UuidInterface $aggregateId, string $type, int $version = 0)
     {
         $this->aggregateId = $aggregateId;
         $this->type = $type;

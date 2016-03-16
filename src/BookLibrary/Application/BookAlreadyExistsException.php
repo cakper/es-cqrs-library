@@ -6,11 +6,4 @@ use RuntimeException;
 
 class BookAlreadyExistsException extends RuntimeException
 {
-
-    /**
-     * BookAlreadyExistsException constructor.
-     */
-    public function __construct()
-    {
-    }
 }

@@ -17,10 +17,6 @@ class ExtendBookCommandHandler
     public function handle(ExtendBookCommand $command)
     {
         $book = $this->bookInventory->get($command->bookId);
-        if (!$book instanceof Book) {
-            throw new \InvalidArgumentException('Book not found');
-        }
-
         $book->extend($command->newDue);
         $this->bookInventory->save($book);
     }
