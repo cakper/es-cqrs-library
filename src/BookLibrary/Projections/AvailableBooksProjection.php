@@ -8,8 +8,9 @@ use BookLibrary\Domain\BookReturnedEvent;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Infrastructure\EventStore\Doctrine\BookAvailableView;
+use Infrastructure\EventStore\Doctrine\DoctrineProjection;
 
-class AvailableBooksProjection
+class AvailableBooksProjection extends DoctrineProjection
 {
     /**
      * @var EntityManager
@@ -30,6 +31,7 @@ class AvailableBooksProjection
     {
         $this->entityManager = $entityManager;
         $this->repository = $this->entityManager->getRepository(BookAvailableView::class);
+        parent::__construct($entityManager);
     }
 
     public function handleNewBook(BookAddedEvent $event)
@@ -37,7 +39,6 @@ class AvailableBooksProjection
         $book = new BookAvailableView($event->getBookCopyId(), $event->getTitle());
         $this->entityManager->persist($book);
         $this->entityManager->flush($book);
-
         $this->titles[$event->getBookCopyId()->toString()] = $event->getTitle();
     }
 
@@ -53,5 +54,10 @@ class AvailableBooksProjection
         $book = new BookAvailableView($event->getBookCopyId(), $this->titles[$event->getBookCopyId()->toString()]);
         $this->entityManager->persist($book);
         $this->entityManager->flush($book);
+    }
+
+    public function getViewClasses() : array
+    {
+        return [BookAvailableView::class];
     }
 }

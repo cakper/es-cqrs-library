@@ -2,10 +2,12 @@
 
 namespace test\BookLibrary;
 
+use ArrayIterator;
 use EventSourcing\AggregateRoot;
 use EventSourcing\DelegateMapperException;
 use EventSourcing\Event;
 use Exception;
+use Iterator;
 use PHPUnit_Framework_Assert;
 
 class Scenario
@@ -48,7 +50,7 @@ class Scenario
      */
     public function given(array $events = null)
     {
-        $this->aggregateRoot = call_user_func([$this->aggregateClass, 'loadFromHistory'], $events);
+        $this->aggregateRoot = call_user_func([$this->aggregateClass, 'loadFromHistory'], new ArrayIterator($events));
 
         return $this;
     }
@@ -100,7 +102,7 @@ class Scenario
         } elseif ($this->exception instanceof Exception) {
             throw new \LogicException(sprintf('Expected events but got Exception "%s"', get_class($this->exception)));
         } elseif (is_array($eventsOrException)) {
-            $this->assert->assertEquals($eventsOrException, $this->aggregateRoot->getChanges());
+            $this->assert->assertEquals(new ArrayIterator($eventsOrException), $this->aggregateRoot->getChanges());
         } else {
             throw new \LogicException('Unexpected expectation');
         }

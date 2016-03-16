@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 namespace EventSourcing;
 
+use ArrayIterator;
+use Iterator;
 use Ramsey\Uuid\UuidInterface;
 
 abstract class AggregateRoot
@@ -16,15 +18,15 @@ abstract class AggregateRoot
     }
 
     abstract public function getId() : UuidInterface;
-    
-    public static function loadFromHistory(EventStream $events)
+
+    public static function loadFromHistory(Iterator $events)
     {
         /** @var self $aggregate */
         $aggregate = new static;
 
-        $events->each(function (Event $event) use ($aggregate) {
+        foreach ($events as $event) {
             $aggregate->apply($event, false);
-        });
+        }
 
         return $aggregate;
     }
@@ -43,9 +45,9 @@ abstract class AggregateRoot
     /**
      * Events
      */
-    public function getChanges() : EventStream
+    public function getChanges() : Iterator
     {
-        return new EventStream($this->changes);
+        return new ArrayIterator($this->changes);
     }
 
     public function markChangesAsCommitted()

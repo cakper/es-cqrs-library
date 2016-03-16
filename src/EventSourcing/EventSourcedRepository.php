@@ -26,15 +26,9 @@ class EventSourcedRepository
 
     public function get(UuidInterface $aggregateId, $aggregateClass) : AggregateRoot
     {
-        $events = $this->eventStore->findEventsForAggregate($aggregateId);
-
-        if (count($events) === 0) {
-            throw new AggregateNotFoundException($aggregateId);
-        }
-
         return call_user_func_array(
             [$aggregateClass, 'loadFromHistory'],
-            [$events]
+            [$this->eventStore->findEventsForAggregate($aggregateId)]
         );
     }
 
@@ -46,9 +40,10 @@ class EventSourcedRepository
             $aggregateRoot->getOriginatingVersion(),
             $aggregateRoot->getChanges()
         );
-        $aggregateRoot->getChanges()->each(function (Event $event) {
+
+        foreach ($aggregateRoot->getChanges() as $event) {
             $this->eventBus->handle($event);
-        });
+        }
         $aggregateRoot->markChangesAsCommitted();
     }
 

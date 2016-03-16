@@ -3,12 +3,14 @@ declare(strict_types = 1);
 namespace Infrastructure\EventStore\Doctrine;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query;
+use EventSourcing\AggregateNotFoundException;
 use EventSourcing\AggregateRoot;
 use EventSourcing\Event as DomainEvent;
 use EventSourcing\EventStore;
-use EventSourcing\EventStream;
 use EventSourcing\OptimisticConcurrencyException;
 use Infrastructure\Domain\Type;
+use Iterator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Serializer;
 
@@ -30,7 +32,7 @@ class DoctrineEventStore implements EventStore
         $this->serializer = $serializer;
     }
 
-    public function saveEvents(UuidInterface $aggregateId, string $aggregateType, int $originatingVersion, EventStream $eventStream)
+    public function saveEvents(UuidInterface $aggregateId, string $aggregateType, int $originatingVersion, Iterator $eventStream)
     {
         $this->entityManager->transactional(function () use ($aggregateId, $aggregateType, $originatingVersion, $eventStream) {
             $aggregate = $this->entityManager->find(Aggregate::class, $aggregateId);
@@ -42,23 +44,39 @@ class DoctrineEventStore implements EventStore
                 throw new OptimisticConcurrencyException();
             }
 
-            $eventStream->each(function (DomainEvent $domainEvent) use ($aggregateId, &$originatingVersion) {
+            foreach ($eventStream as $domainEvent) {
                 $event = new Event($aggregateId, ++$originatingVersion, $this->serializer->serialize($domainEvent, 'json'), Type::forEvent($domainEvent));
                 $this->entityManager->persist($event);
-            });
+            }
 
             $aggregate->version = $originatingVersion;
             $this->entityManager->persist($aggregate);
         });
     }
 
-    public function findEventsForAggregate(UuidInterface $aggregateId) : EventStream
+    public function findEventsForAggregate(UuidInterface $aggregateId) : Iterator
     {
+        $aggregate = $this->entityManager->find(Aggregate::class, $aggregateId);
+
+        if (!$aggregate instanceof Aggregate) {
+            throw new AggregateNotFoundException($aggregateId);
+        }
+
         $query = $this->entityManager->createQuery("SELECT e FROM EventStore:Event e WHERE e.aggregateId = :aggregateId");
         $query->setParameter('aggregateId', $aggregateId->toString());
 
-        return new EventStream(array_map(function ($event) : DomainEvent {
-            return $this->serializer->deserialize($event['data'], $event['type'], 'json');
-        }, $query->getArrayResult()));
+        foreach ($query->iterate(null, Query::HYDRATE_ARRAY) as $row) {
+            yield $this->serializer->deserialize($row[0]['data'], $row[0]['type'], 'json');
+        }
+    }
+
+    public function findEventsOfClasses(array $classes) : Iterator
+    {
+        $query = $this->entityManager->createQuery("SELECT e FROM EventStore:Event e where e.type in (:types)");
+        $query->setParameter('types', Type::forEventClasses($classes));
+
+        foreach ($query->iterate(null, Query::HYDRATE_ARRAY) as $row) {
+            yield $this->serializer->deserialize($row[0]['data'], $row[0]['type'], 'json');
+        }
     }
 }
