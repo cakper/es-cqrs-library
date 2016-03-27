@@ -2,6 +2,7 @@
 
 namespace EventSourcing;
 
+use EventSourcing\Messaging\EventBus;
 use Infrastructure\Domain\Type;
 use Ramsey\Uuid\UuidInterface;
 

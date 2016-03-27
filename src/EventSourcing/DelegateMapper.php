@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 namespace EventSourcing;
 
+use EventSourcing\Messaging\Event;
 use ReflectionClass;
 use ReflectionMethod;
 

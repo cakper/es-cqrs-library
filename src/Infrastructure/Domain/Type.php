@@ -2,11 +2,11 @@
 
 namespace Infrastructure\Domain;
 
-use BookLibrary\Domain\Book;
-use BookLibrary\Domain\BookAddedEvent;
-use BookLibrary\Domain\BookExtendedEvent;
-use BookLibrary\Domain\BookLentEvent;
-use BookLibrary\Domain\BookReturnedEvent;
+use Library\Domain\Book;
+use Library\Domain\BookAddedEvent;
+use Library\Domain\BookExtendedEvent;
+use Library\Domain\BookLentEvent;
+use Library\Domain\BookReturnedEvent;
 
 class Type
 {
@@ -26,14 +26,9 @@ class Type
         return static::$aggregateMapping[get_class($aggregate)];
     }
 
-    public static function forAggregateClass($aggregateClass)
-    {
-        return static::$aggregateMapping[$aggregateClass];
-    }
-
     public static function forEvent($event)
     {
-        return static::$eventMapping[get_class($event)];
+        return static::forEventClass(get_class($event));
     }
 
     public static function forEventClass($eventClass)

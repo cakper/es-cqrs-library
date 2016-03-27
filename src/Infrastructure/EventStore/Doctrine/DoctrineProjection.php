@@ -3,9 +3,8 @@
 namespace Infrastructure\EventStore\Doctrine;
 
 use Doctrine\ORM\EntityManager;
-use EventSourcing\Projection;
 
-abstract class DoctrineProjection implements Projection
+abstract class DoctrineProjection
 {
     /**
      * @var EntityManager

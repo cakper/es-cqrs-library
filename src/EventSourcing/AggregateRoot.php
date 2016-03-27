@@ -3,6 +3,7 @@ declare(strict_types = 1);
 namespace EventSourcing;
 
 use ArrayIterator;
+use EventSourcing\Messaging\Event;
 use Iterator;
 use Ramsey\Uuid\UuidInterface;
 
@@ -21,7 +22,6 @@ abstract class AggregateRoot
 
     public static function loadFromHistory(Iterator $events)
     {
-        /** @var self $aggregate */
         $aggregate = new static;
 
         foreach ($events as $event) {

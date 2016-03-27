@@ -2,7 +2,7 @@
 
 namespace test\BookLibrary;
 
-use EventSourcing\Event;
+use EventSourcing\Messaging\Event;
 use Exception;
 use PHPUnit_Framework_TestCase;
 

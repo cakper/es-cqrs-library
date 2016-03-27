@@ -5,9 +5,8 @@ namespace test\BookLibrary;
 use ArrayIterator;
 use EventSourcing\AggregateRoot;
 use EventSourcing\DelegateMapperException;
-use EventSourcing\Event;
+use EventSourcing\Messaging\Event;
 use Exception;
-use Iterator;
 use PHPUnit_Framework_Assert;
 
 class Scenario

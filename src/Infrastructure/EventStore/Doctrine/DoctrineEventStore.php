@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
 use EventSourcing\AggregateNotFoundException;
 use EventSourcing\AggregateRoot;
-use EventSourcing\Event as DomainEvent;
 use EventSourcing\EventStore;
 use EventSourcing\OptimisticConcurrencyException;
 use Infrastructure\Domain\Type;

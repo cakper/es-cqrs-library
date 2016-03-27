@@ -2,14 +2,14 @@
 
 namespace test\BookLibrary\Domain;
 
-use BookLibrary\Domain\Book;
-use BookLibrary\Domain\BookAddedEvent;
-use BookLibrary\Domain\BookAlreadyLentException;
-use BookLibrary\Domain\BookExtendedEvent;
-use BookLibrary\Domain\BookLentEvent;
-use BookLibrary\Domain\BookNotLentCannotBeExtendedException;
-use BookLibrary\Domain\BookNotLentCannotBeReturnedException;
-use BookLibrary\Domain\BookReturnedEvent;
+use Library\Domain\Book;
+use Library\Domain\BookAddedEvent;
+use Library\Domain\BookAlreadyLentException;
+use Library\Domain\BookExtendedEvent;
+use Library\Domain\BookLentEvent;
+use Library\Domain\BookNotLentCannotBeExtendedException;
+use Library\Domain\BookNotLentCannotBeReturnedException;
+use Library\Domain\BookReturnedEvent;
 use EventSourcing\Calendar;
 use Ramsey\Uuid\Uuid;
 use test\BookLibrary\ScenarioTest;
