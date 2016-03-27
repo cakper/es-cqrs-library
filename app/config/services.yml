@@ -5,42 +5,44 @@ parameters:
 
 services:
     library.add_book_handler:
-        class: Library\Application\Command\AddBookCommandHandler
+        class: Library\BookLending\Application\Command\AddBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: command_handler, handles: Library\Application\Command\AddBookCommand }
+            - { name: command_handler, handles: Library\BookLending\Application\Command\AddBookCommand }
     library.lend_book_handler:
-        class: Library\Application\Command\LendBookCommandHandler
+        class: Library\BookLending\Application\Command\LendBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: command_handler, handles: Library\Application\Command\LendBookCommand }
+            - { name: command_handler, handles: Library\BookLending\Application\Command\LendBookCommand }
     library.return_book_handler:
-        class: Library\Application\Command\ReturnBookCommandHandler
+        class: Library\BookLending\Application\Command\ReturnBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: command_handler, handles: Library\Application\Command\ReturnBookCommand }
+            - { name: command_handler, handles: Library\BookLending\Application\Command\ReturnBookCommand }
     library.extend_book_handler:
-        class: Library\Application\Command\ExtendBookCommandHandler
+        class: Library\BookLending\Application\Command\ExtendBookCommandHandler
         arguments:
             - '@library.book_inventory'
         tags:
-            - { name: command_handler, handles: Library\Application\Command\ExtendBookCommand }
+            - { name: command_handler, handles: Library\BookLending\Application\Command\ExtendBookCommand }
     library.book_inventory:
-        class: Library\Domain\EventSourcedBookInventory
+        class: Library\BookLending\Domain\EventSourcedBookInventory
         arguments: ["@library.event_sourcing.event_sourced_repository"]
     library.projections.available_books:
-        class: Library\Application\ReadModel\AvailableBooksProjection
+        class: Library\BookLending\Application\ReadModel\AvailableBooksProjection
         arguments: ["@doctrine.orm.default_entity_manager"]
         tags:
-            - { name: event_subscriber, subscribes_to: Library\Domain\BookAddedEvent, method: handleNewBook }
-            - { name: event_subscriber, subscribes_to: Library\Domain\BookLentEvent, method: handleLent }
-            - { name: event_subscriber, subscribes_to: Library\Domain\BookReturnedEvent, method: handleReturned }
+            - { name: event_subscriber, subscribes_to: Library\BookLending\Domain\BookAddedEvent, method: handleNewBook }
+            - { name: event_subscriber, subscribes_to: Library\BookLending\Domain\BookLentEvent, method: handleLent }
+            - { name: event_subscriber, subscribes_to: Library\BookLending\Domain\BookReturnedEvent, method: handleReturned }
+    library.event_sourcing.type_mapping:
+        class: Library\BookLending\Infrastructure\EventStore\BookLendingTypeMapping
     library.event_sourcing.event_sourced_repository:
         class: EventSourcing\EventSourcedRepository
-        arguments: ["@library.event_sourcing.event_store", "@library.event_sourcing.event_bus"]
+        arguments: ["@library.event_sourcing.event_store", "@library.event_sourcing.event_bus", "@library.event_sourcing.type_mapping"]
     library.event_sourcing.event_bus:
         class: Infrastructure\EventSourcing\SimpleBusEventBus
         arguments: ["@event_bus"]
@@ -49,27 +51,31 @@ services:
         arguments: ["@command_bus"]
     library.event_sourcing.event_store:
         class: Infrastructure\EventStore\Doctrine\DoctrineEventStore
-        arguments: ["@doctrine.orm.default_entity_manager", "@library.event_sourcing.serializer"]
+        arguments: ["@doctrine.orm.default_entity_manager", "@library.event_sourcing.serializer", "@library.event_sourcing.type_mapping"]
     library.event_sourcing.json_encoder:
         class: Symfony\Component\Serializer\Encoder\JsonEncoder
     library.event_sourcing.normalizer.book_added_event_normalizer:
-        class: Library\Infrastructure\Domain\Normalizer\BookAddedEventNormalizer
+        class: Library\BookLending\Infrastructure\Domain\Normalizer\BookAddedEventNormalizer
+        arguments: ["@library.event_sourcing.type_mapping"]
     library.event_sourcing.normalizer.book_extended_event_normalizer:
-        class: Library\Infrastructure\Domain\Normalizer\BookExtendedEventNormalizer
+        class: Library\BookLending\Infrastructure\Domain\Normalizer\BookExtendedEventNormalizer
+        arguments: ["@library.event_sourcing.type_mapping"]
     library.event_sourcing.normalizer.book_lent_event_normalizer:
-        class: Library\Infrastructure\Domain\Normalizer\BookLentEventNormalizer
+        class: Library\BookLending\Infrastructure\Domain\Normalizer\BookLentEventNormalizer
+        arguments: ["@library.event_sourcing.type_mapping"]
     library.event_sourcing.normalizer.book_returned_event_normalizer:
-        class: Library\Infrastructure\Domain\Normalizer\BookReturnedEventNormalizer
+        class: Library\BookLending\Infrastructure\Domain\Normalizer\BookReturnedEventNormalizer
+        arguments: ["@library.event_sourcing.type_mapping"]
     library.event_sourcing.serializer:
         class: Symfony\Component\Serializer\Serializer
         arguments: [["@library.event_sourcing.normalizer.book_added_event_normalizer", "@library.event_sourcing.normalizer.book_extended_event_normalizer", "@library.event_sourcing.normalizer.book_lent_event_normalizer", "@library.event_sourcing.normalizer.book_returned_event_normalizer"], ["@library.event_sourcing.json_encoder"]]
     library.cli.test_book:
-        class: Library\Application\Cli\BookTestConsoleCommand
+        class: Library\BookLending\Application\Cli\BookTestConsoleCommand
         arguments: ["@library.event_sourcing.command_bus"]
         tags:
             - { name: console.command }
     library.cli.reproject:
-        class: Library\Application\Cli\ReprojectAvailableBooksCommand
+        class: Library\BookLending\Application\Cli\ReprojectAvailableBooksCommand
         arguments: ["@library.projections.available_books", "@library.event_sourcing.event_store"]
         tags:
             - { name: console.command }

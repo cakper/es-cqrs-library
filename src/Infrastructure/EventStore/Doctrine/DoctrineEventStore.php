@@ -7,8 +7,8 @@ use Doctrine\ORM\Query;
 use EventSourcing\AggregateNotFoundException;
 use EventSourcing\AggregateRoot;
 use EventSourcing\EventStore;
+use EventSourcing\EventStore\TypeMapping;
 use EventSourcing\OptimisticConcurrencyException;
-use Infrastructure\Domain\Type;
 use Iterator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -24,11 +24,16 @@ class DoctrineEventStore implements EventStore
      * @var Serializer
      */
     private $serializer;
+    /**
+     * @var TypeMapping
+     */
+    private $typeMapping;
 
-    public function __construct(EntityManager $entityManager, Serializer $serializer)
+    public function __construct(EntityManager $entityManager, Serializer $serializer, TypeMapping $typeMapping)
     {
         $this->entityManager = $entityManager;
         $this->serializer = $serializer;
+        $this->typeMapping = $typeMapping;
     }
 
     public function saveEvents(UuidInterface $aggregateId, int $aggregateType, int $originatingVersion, Iterator $events)
@@ -44,7 +49,7 @@ class DoctrineEventStore implements EventStore
             }
 
             foreach ($events as $domainEvent) {
-                $event = new Event($aggregateId, ++$originatingVersion, $this->serializer->serialize($domainEvent, 'json'), Type::forEvent($domainEvent));
+                $event = new Event($aggregateId, ++$originatingVersion, $this->serializer->serialize($domainEvent, 'json'), $this->typeMapping->forEventClass(get_class($domainEvent)));
                 $this->entityManager->persist($event);
             }
 
@@ -72,7 +77,7 @@ class DoctrineEventStore implements EventStore
     public function findEventsOfClasses(array $classes) : Iterator
     {
         $query = $this->entityManager->createQuery("SELECT e FROM EventStore:Event e where e.type in (:types)");
-        $query->setParameter('types', Type::forEventClasses($classes));
+        $query->setParameter('types', $this->typeMapping->forEventClasses($classes));
 
         foreach ($query->iterate(null, Query::HYDRATE_ARRAY) as $row) {
             yield $this->serializer->deserialize($row[0]['data'], $row[0]['type'], 'json');

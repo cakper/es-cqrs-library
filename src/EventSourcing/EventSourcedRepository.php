@@ -2,8 +2,8 @@
 
 namespace EventSourcing;
 
+use EventSourcing\EventStore\TypeMapping;
 use EventSourcing\Messaging\EventBus;
-use Infrastructure\Domain\Type;
 use Ramsey\Uuid\UuidInterface;
 
 class EventSourcedRepository
@@ -17,11 +17,16 @@ class EventSourcedRepository
      * @var EventBus
      */
     private $eventBus;
+    /**
+     * @var TypeMapping
+     */
+    private $typeMapping;
 
-    public function __construct(EventStore $eventStore, EventBus $eventBus)
+    public function __construct(EventStore $eventStore, EventBus $eventBus, TypeMapping $typeMapping)
     {
         $this->eventStore = $eventStore;
         $this->eventBus = $eventBus;
+        $this->typeMapping = $typeMapping;
     }
 
     public function get(UuidInterface $aggregateId, $aggregateClass) : AggregateRoot
@@ -36,7 +41,7 @@ class EventSourcedRepository
     {
         $this->eventStore->saveEvents(
             $aggregateRoot->getId(),
-            Type::forAggregate($aggregateRoot),
+            $this->typeMapping->forAggregateClass(get_class($aggregateRoot)),
             $aggregateRoot->getOriginatingVersion(),
             $aggregateRoot->getChanges()
         );
@@ -46,5 +51,4 @@ class EventSourcedRepository
         }
         $aggregateRoot->markChangesAsCommitted();
     }
-
 }

@@ -12,3 +12,4 @@ monolog:
             type:   console
             bubble: false
             channels: [!event, !doctrine]
+
