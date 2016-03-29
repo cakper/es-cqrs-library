@@ -1,6 +1,6 @@
 <?php
 
-namespace test\BookLibrary\Domain;
+namespace test\Library\BookLending\Domain;
 
 use EventSourcing\Calendar;
 use Library\BookLending\Domain\Book;
@@ -12,7 +12,7 @@ use Library\BookLending\Domain\BookNotLentCannotBeExtendedException;
 use Library\BookLending\Domain\BookNotLentCannotBeReturnedException;
 use Library\BookLending\Domain\BookReturnedEvent;
 use Ramsey\Uuid\Uuid;
-use test\BookLibrary\ScenarioTest;
+use test\EventSourcing\ScenarioTest;
 
 class BookTest extends ScenarioTest
 {

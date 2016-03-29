@@ -1,10 +1,10 @@
 <?php
 
-namespace test\BookLibrary;
+namespace test\EventSourcing;
 
 use ArrayIterator;
 use EventSourcing\AggregateRoot;
-use EventSourcing\DelegateMapperException;
+use EventSourcing\DelegateMapper\DelegateMapperException;
 use EventSourcing\Messaging\Event;
 use Exception;
 use PHPUnit_Framework_Assert;

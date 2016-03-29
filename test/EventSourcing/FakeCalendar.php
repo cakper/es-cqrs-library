@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace test\BookLibrary;
+namespace test\EventSourcing;
 
 use DateTimeImmutable;
 use EventSourcing\Calendar;

@@ -1,7 +1,9 @@
 <?php
 
-namespace EventSourcing;
+namespace EventSourcing\Repository;
 
+use EventSourcing\AggregateRoot;
+use EventSourcing\EventStore\EventStore;
 use EventSourcing\EventStore\TypeMapping;
 use EventSourcing\Messaging\EventBus;
 use Ramsey\Uuid\UuidInterface;

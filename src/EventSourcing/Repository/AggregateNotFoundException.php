@@ -1,6 +1,6 @@
 <?php
 
-namespace EventSourcing;
+namespace EventSourcing\Repository;
 
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Intl\Exception\RuntimeException;

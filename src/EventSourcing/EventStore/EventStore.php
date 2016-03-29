@@ -1,6 +1,6 @@
 <?php
 declare(strict_types = 1);
-namespace EventSourcing;
+namespace EventSourcing\EventStore;
 
 use Iterator;
 use Ramsey\Uuid\UuidInterface;

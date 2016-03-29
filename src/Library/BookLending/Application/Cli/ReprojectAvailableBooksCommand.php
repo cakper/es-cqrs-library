@@ -3,8 +3,8 @@ declare(strict_types = 1);
 namespace Library\BookLending\Application\Cli;
 
 use Doctrine\ORM\Query;
-use EventSourcing\DelegateMapper;
-use EventSourcing\EventStore;
+use EventSourcing\DelegateMapper\DelegateMapper;
+use EventSourcing\EventStore\EventStore;
 use Library\BookLending\Application\ReadModel\AvailableBooksProjection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

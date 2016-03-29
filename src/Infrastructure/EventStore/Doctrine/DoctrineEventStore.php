@@ -4,11 +4,11 @@ namespace Infrastructure\EventStore\Doctrine;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Query;
-use EventSourcing\AggregateNotFoundException;
 use EventSourcing\AggregateRoot;
-use EventSourcing\EventStore;
+use EventSourcing\EventStore\EventStore;
+use EventSourcing\EventStore\OptimisticConcurrencyException;
 use EventSourcing\EventStore\TypeMapping;
-use EventSourcing\OptimisticConcurrencyException;
+use EventSourcing\Repository\AggregateNotFoundException;
 use Iterator;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Serializer\Serializer;

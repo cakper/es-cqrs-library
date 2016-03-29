@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 namespace Library\BookLending\Domain;
 
-use EventSourcing\EventSourcedRepository;
+use EventSourcing\Repository\EventSourcedRepository;
 use Ramsey\Uuid\UuidInterface;
 
 class EventSourcedBookInventory implements BookInventory

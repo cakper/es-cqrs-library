@@ -3,6 +3,7 @@ declare(strict_types = 1);
 namespace EventSourcing;
 
 use ArrayIterator;
+use EventSourcing\DelegateMapper\DelegateMapper;
 use EventSourcing\Messaging\Event;
 use Iterator;
 use Ramsey\Uuid\UuidInterface;
