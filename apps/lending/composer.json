@@ -22,6 +22,12 @@
       "test\\": "test/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../packages/event-sourcing"
+    }
+  ],
   "require": {
     "php": ">=7.0.0",
     "symfony/symfony": "3.0.*",
@@ -34,7 +40,8 @@
     "sensio/framework-extra-bundle": "^3.0.2",
     "incenteev/composer-parameter-handler": "^2.0",
     "ramsey/uuid": "^3.0",
-    "simple-bus/symfony-bridge": "^4.1"
+    "simple-bus/symfony-bridge": "^4.1",
+    "source-ministry/event-sourcing": "*@dev"
   },
   "require-dev": {
     "sensio/generator-bundle": "^3.0",

@@ -1,11 +1,10 @@
 <?php
 
-namespace test\EventSourcing;
+namespace EventSourcing\Test;
 
 use EventSourcing\Messaging\Event;
 use Exception;
 use PHPUnit_Framework_TestCase;
-use test\EventSourcing\Scenario;
 
 abstract class ScenarioTest extends PHPUnit_Framework_TestCase
 {

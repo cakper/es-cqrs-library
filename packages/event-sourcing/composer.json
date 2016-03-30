@@ -1,0 +1,24 @@
+{
+  "name": "source-ministry/event-sourcing",
+  "type": "package",
+  "license": "Mit",
+  "authors": [
+    {
+      "name": "Kacper Gunia",
+      "email": "kacper@gunia.me"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  },
+  "require": {
+    "php": ">=7.0.0"
+  },
+  "config": {
+    "platform": {
+      "php": "7.0.0"
+    }
+  }
+}

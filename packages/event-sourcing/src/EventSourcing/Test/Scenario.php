@@ -1,6 +1,6 @@
 <?php
 
-namespace test\EventSourcing;
+namespace EventSourcing\Test;
 
 use ArrayIterator;
 use EventSourcing\AggregateRoot;

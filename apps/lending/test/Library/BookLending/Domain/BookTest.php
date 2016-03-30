@@ -3,6 +3,7 @@
 namespace test\Library\BookLending\Domain;
 
 use EventSourcing\Calendar;
+use EventSourcing\Test\ScenarioTest;
 use Library\BookLending\Domain\Book;
 use Library\BookLending\Domain\BookAddedEvent;
 use Library\BookLending\Domain\BookAlreadyLentException;
@@ -12,7 +13,6 @@ use Library\BookLending\Domain\BookNotLentCannotBeExtendedException;
 use Library\BookLending\Domain\BookNotLentCannotBeReturnedException;
 use Library\BookLending\Domain\BookReturnedEvent;
 use Ramsey\Uuid\Uuid;
-use test\EventSourcing\ScenarioTest;
 
 class BookTest extends ScenarioTest
 {
