@@ -12,4 +12,6 @@ interface EventStore
     public function findEventsForAggregate(UuidInterface $aggregateId) : Iterator;
 
     public function findEventsOfClasses(array $classes) : Iterator;
+
+    public function findAllEvents() : Iterator;
 }

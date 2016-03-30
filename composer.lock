@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "44a25965a5a2e3b028c5347198c1bf93",
-    "content-hash": "67dc013b0d5d828376bf85b24c32698b",
+    "hash": "f0a3e2a78353d4fb7c5fea0d3fbcbb6b",
+    "content-hash": "e37c80415a9c35423611f0deee9c9074",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1054,6 +1054,139 @@
             "time": "2016-03-11 19:54:08"
         },
         {
+            "name": "php-amqplib/php-amqplib",
+            "version": "v2.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-amqplib/php-amqplib.git",
+                "reference": "ba9468b08b5ff90859ef5069a6b9a70bcdd98fa1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/ba9468b08b5ff90859ef5069a6b9a70bcdd98fa1",
+                "reference": "ba9468b08b5ff90859ef5069a6b9a70bcdd98fa1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "replace": {
+                "videlalvaro/php-amqplib": "self.version"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8",
+                "scrutinizer/ocular": "^1.1"
+            },
+            "suggest": {
+                "ext-sockets": "Use AMQPSocketConnection"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PhpAmqpLib\\": "PhpAmqpLib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Alvaro Videla",
+                    "role": "Original Maintainer"
+                },
+                {
+                    "name": "John Kelly",
+                    "email": "johnmkelly86@gmail.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Raúl Araya",
+                    "email": "nubeiro@gmail.com",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "Formerly videlalvaro/php-amqplib.  This library is a pure PHP implementation of the AMQP protocol. It's been tested against RabbitMQ.",
+            "homepage": "https://github.com/php-amqplib/php-amqplib/",
+            "keywords": [
+                "message",
+                "queue",
+                "rabbitmq"
+            ],
+            "time": "2016-03-02 16:36:48"
+        },
+        {
+            "name": "php-amqplib/rabbitmq-bundle",
+            "version": "v1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-amqplib/RabbitMqBundle.git",
+                "reference": "09be4bea8f84613946f79d01b95c2828320eb670"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-amqplib/RabbitMqBundle/zipball/09be4bea8f84613946f79d01b95c2828320eb670",
+                "reference": "09be4bea8f84613946f79d01b95c2828320eb670",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "php-amqplib/php-amqplib": "~2.6",
+                "symfony/config": "~2.3 || ~3.0",
+                "symfony/console": "~2.3 || ~3.0",
+                "symfony/dependency-injection": "~2.3 || ~3.0",
+                "symfony/event-dispatcher": "~2.3 || ~3.0",
+                "symfony/yaml": "~2.3 || ~3.0"
+            },
+            "replace": {
+                "oldsound/rabbitmq-bundle": "self.version"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8 || ~5.0",
+                "symfony/debug": "~2.3 || ~3.0",
+                "symfony/serializer": "~2.3 || ~3.0"
+            },
+            "suggest": {
+                "symfony/framework-bundle": "To use this lib as a full Symfony Bundle and to use the profiler data collector"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "OldSound\\RabbitMqBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alvaro Videla"
+                }
+            ],
+            "description": "Integrates php-amqplib with Symfony2 and RabbitMq. Formerly oldsound/rabbitmq-bundle.",
+            "keywords": [
+                "AMQP",
+                "Symfony2",
+                "message",
+                "queue",
+                "rabbitmq"
+            ],
+            "time": "2016-03-03 09:00:12"
+        },
+        {
             "name": "psr/log",
             "version": "1.0.0",
             "source": {
@@ -1321,6 +1454,116 @@
             "time": "2015-11-07 08:07:40"
         },
         {
+            "name": "simple-bus/asynchronous",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/Asynchronous.git",
+                "reference": "b9c8aedb11413e103d4eb3806b89ae75e1e5f378"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/Asynchronous/zipball/b9c8aedb11413e103d4eb3806b89ae75e1e5f378",
+                "reference": "b9c8aedb11413e103d4eb3806b89ae75e1e5f378",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4",
+                "psr/log": "~1.0",
+                "simple-bus/message-bus": "~2.0",
+                "simple-bus/serialization": "~2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\Asynchronous\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Generic classes and interfaces for asynchronous messaging using SimpleBus",
+            "homepage": "http://github.com/SimpleBus/Asynchronous",
+            "keywords": [
+                "asynchronous",
+                "command bus",
+                "event bus",
+                "messaging"
+            ],
+            "time": "2015-05-08 13:53:20"
+        },
+        {
+            "name": "simple-bus/asynchronous-bundle",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/AsynchronousBundle.git",
+                "reference": "b3337e5adafd85ae479974d0a06cacfdbbc29675"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/AsynchronousBundle/zipball/b3337e5adafd85ae479974d0a06cacfdbbc29675",
+                "reference": "b3337e5adafd85ae479974d0a06cacfdbbc29675",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4",
+                "simple-bus/asynchronous": "~2.0",
+                "simple-bus/message-bus": "~2.0",
+                "simple-bus/symfony-bridge": "~4.0",
+                "symfony/framework-bundle": "~2.0|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6",
+                "symfony/monolog-bundle": "~2.3"
+            },
+            "suggest": {
+                "symfony/monolog-bundle": "For logging messages"
+            },
+            "type": "bundle",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\AsynchronousBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Symfony bundle for using SimpleBus/Asynchronous",
+            "homepage": "http://github.com/SimpleBus/AsynchronousBundle",
+            "keywords": [
+                "asynchronous",
+                "command bus",
+                "event bus",
+                "message",
+                "message bus"
+            ],
+            "time": "2015-12-06 20:14:16"
+        },
+        {
             "name": "simple-bus/message-bus",
             "version": "v2.2.2",
             "source": {
@@ -1369,6 +1612,114 @@
                 "message bus"
             ],
             "time": "2016-02-12 08:35:53"
+        },
+        {
+            "name": "simple-bus/rabbitmq-bundle-bridge",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/RabbitMQBundleBridge.git",
+                "reference": "48214c4e20efd50b065f0203fae2a771641b4db2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/RabbitMQBundleBridge/zipball/48214c4e20efd50b065f0203fae2a771641b4db2",
+                "reference": "48214c4e20efd50b065f0203fae2a771641b4db2",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4",
+                "php-amqplib/rabbitmq-bundle": "~1.0",
+                "simple-bus/asynchronous": "~2.0",
+                "simple-bus/asynchronous-bundle": "~2.0",
+                "simple-bus/message-bus": "~2.0",
+                "symfony/monolog-bundle": "~2.3 || ~3.0"
+            },
+            "require-dev": {
+                "matthiasnoback/phpunit-asynchronicity": "~1.0",
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6",
+                "simple-bus/jms-serializer-bundle-bridge": "~2.0",
+                "symfony/console": "~2.0 || ~3.0",
+                "symfony/finder": "~2.0 || ~3.0",
+                "symfony/process": "~2.0 || ~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\RabbitMQBundleBridge\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Use OldSoundRabbitMQBundle with SimpleBus/AsynchronousBundle",
+            "homepage": "http://github.com/SimpleBus/RabbitMQBundleBridge",
+            "keywords": [
+                "command bus",
+                "event bus",
+                "message bus",
+                "messages",
+                "rabbitmq"
+            ],
+            "time": "2016-02-18 22:09:21"
+        },
+        {
+            "name": "simple-bus/serialization",
+            "version": "v2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SimpleBus/Serialization.git",
+                "reference": "df7a5704d4a9c3057184be09ce8dc6d442785618"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SimpleBus/Serialization/zipball/df7a5704d4a9c3057184be09ce8dc6d442785618",
+                "reference": "df7a5704d4a9c3057184be09ce8dc6d442785618",
+                "shasum": ""
+            },
+            "require": {
+                "beberlei/assert": "~2.0",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "~0.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SimpleBus\\Serialization\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthias Noback",
+                    "email": "matthiasnoback@gmail.com",
+                    "homepage": "http://php-and-symfony.matthiasnoback.nl"
+                }
+            ],
+            "description": "Generic classes and interfaces for serializing messages",
+            "homepage": "http://github.com/SimpleBus/Serialization",
+            "keywords": [
+                "SimpleBus",
+                "messages",
+                "serialization"
+            ],
+            "time": "2015-05-08 13:34:17"
         },
         {
             "name": "simple-bus/symfony-bridge",

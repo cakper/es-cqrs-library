@@ -83,4 +83,13 @@ class DoctrineEventStore implements EventStore
             yield $this->serializer->deserialize($row[0]['data'], $row[0]['type'], 'json');
         }
     }
+
+    public function findAllEvents() : Iterator
+    {
+        $query = $this->entityManager->createQuery("SELECT e FROM EventStore:Event e");
+
+        foreach ($query->iterate(null, Query::HYDRATE_ARRAY) as $row) {
+            yield $this->serializer->deserialize($row[0]['data'], $row[0]['type'], 'json');
+        }
+    }
 }

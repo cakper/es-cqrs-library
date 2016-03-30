@@ -43,12 +43,20 @@ class ReprojectAvailableBooksCommand extends Command
         $this->availableBooksProjection->flush();
         $eventClasses = DelegateMapper::findEvents($this->availableBooksProjection, 'handle');
 
-        foreach ($this->eventStore->findEventsOfClasses($eventClasses) as $event) {
+        $start = microtime(true);
+
+        foreach ($this->eventStore->findAllEvents() as $event) {
+//        foreach ($this->eventStore->findEventsOfClasses($eventClasses) as $event) {
             try {
                 DelegateMapper::call($this->availableBooksProjection, 'handle', $event);
             } catch (\Exception $e) {
 
             }
         }
+        $this->availableBooksProjection->persist();
+
+        $stop = microtime(true) - $start;
+
+        var_dump($stop);
     }
 }

@@ -41,7 +41,7 @@ services:
     library.event_sourcing.type_mapping:
         class: Library\BookLending\Infrastructure\EventStore\BookLendingTypeMapping
     library.event_sourcing.event_sourced_repository:
-        class: EventSourcing\EventSourcedRepository
+        class: EventSourcing\Repository\EventSourcedRepository
         arguments: ["@library.event_sourcing.event_store", "@library.event_sourcing.event_bus", "@library.event_sourcing.type_mapping"]
     library.event_sourcing.event_bus:
         class: Infrastructure\EventSourcing\SimpleBusEventBus
