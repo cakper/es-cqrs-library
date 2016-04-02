@@ -41,7 +41,8 @@
     "incenteev/composer-parameter-handler": "^2.0",
     "ramsey/uuid": "^3.0",
     "simple-bus/symfony-bridge": "^4.1",
-    "source-ministry/event-sourcing": "*@dev"
+    "source-ministry/event-sourcing": "*@dev",
+    "php-amqplib/rabbitmq-bundle": "^1.9"
   },
   "require-dev": {
     "sensio/generator-bundle": "^3.0",

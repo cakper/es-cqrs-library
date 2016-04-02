@@ -1,8 +1,8 @@
 # This file is auto-generated during the composer install
 parameters:
-    database_host: 127.0.0.1
+    database_host: lending-db
     database_port: null
-    database_name: symfony
+    database_name: lending
     database_user: root
     database_password: null
     secret: d8f01318a7276521d62053f42acb34d47658b434

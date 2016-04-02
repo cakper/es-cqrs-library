@@ -59,3 +59,15 @@ doctrine:
                 dir: %kernel.root_dir%/../src/Infrastructure/EventStore/Doctrine/
                 prefix: Infrastructure\EventStore\Doctrine
                 alias: EventStore
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     'queue'
+            port:     5672
+            user:     'queue'
+            password: 'queue'
+            vhost:    '/'
+    producers:
+        upload_picture:
+            connection:       default
+            exchange_options: {name: 'library-lending', type: fanout}

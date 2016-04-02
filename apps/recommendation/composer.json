@@ -25,7 +25,8 @@
         "symfony/console": "~2.3",
         "symfony/process": "~2.3",
         "symfony/serializer": "~2.3",
-        "graphaware/neo4j-php-client": "^3.3"
+        "graphaware/neo4j-php-client": "^3.3",
+        "fiunchinho/rabbitmq-service-provider": "^1.0"
     },
     "config": {
         "platform": {

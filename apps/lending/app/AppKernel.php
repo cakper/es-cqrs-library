@@ -14,6 +14,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusCommandBusBundle(),
             new SimpleBus\SymfonyBridge\SimpleBusEventBusBundle(),
+            new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

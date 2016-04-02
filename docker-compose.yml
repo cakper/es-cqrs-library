@@ -1,0 +1,35 @@
+version: '2'
+
+services:
+  queue:
+    image: rabbitmq:management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      RABBITMQ_DEFAULT_USER: queue
+      RABBITMQ_DEFAULT_PASS: queue
+
+  lending-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+      MYSQL_DATABASE: 'lending'
+    volumes:
+      - './db/lending:/docker-entrypoint-initdb.d'
+
+  lending:
+    image: library
+    volumes:
+      - '.:/mnt/book-library'
+    working_dir: '/mnt/book-library'
+    entrypoint: './lending-queues.sh'
+
+  recommendation:
+    image: php:7
+    ports:
+      - '9999:8000'
+    volumes:
+      - '.:/mnt/book-library'
+    working_dir: '/mnt/book-library'
+    entrypoint: './recommendation-server.sh'
